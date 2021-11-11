@@ -21,6 +21,7 @@ modules = [
 	{org = "asus", packageName = "madusanka", moduleName = "madusanka.caller_alpha"},
 	{org = "asus", packageName = "madusanka", moduleName = "madusanka.filter_alpha"},
 	{org = "asus", packageName = "madusanka", moduleName = "madusanka.method_handler"},
+	{org = "asus", packageName = "madusanka", moduleName = "madusanka.store_alpha"},
 	{org = "asus", packageName = "madusanka", moduleName = "madusanka.validator_alpha"}
 ]
 

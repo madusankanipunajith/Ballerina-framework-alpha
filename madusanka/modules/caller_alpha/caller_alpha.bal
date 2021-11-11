@@ -1,5 +1,5 @@
 import madusanka.validator_alpha;
-import madusanka.method_handler;
+import madusanka.store_alpha;
 
 public function caller(string message) returns validator_alpha:JsonRPCTypes?|error{
 
@@ -18,7 +18,7 @@ public function caller(string message) returns validator_alpha:JsonRPCTypes?|err
 
         if result is validator_alpha:Request{
 
-            foreach var item in method_handler:method_array {
+            foreach var item in store_alpha:method_array {
 
                 if (item.name === result.method){
 

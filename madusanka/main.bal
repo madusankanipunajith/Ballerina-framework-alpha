@@ -9,13 +9,12 @@ type ASP record {
     int y;
 };
 
-string str = "{\"jsonrpc\":\"2.0\",\"method\":\"add\",\"params\":{\"x\":89, \"y\":100},\"id\":10}";
+string str = "{\"jsonrpc\":\"2.0\",\"method\":\"sub\",\"params\":{\"x\":89, \"y\":100},\"id\":10}";
 
 public function main() returns error?{
 
     method_handler:method method_1 =  check new("add", addFunction);
     method_handler:method method_2 =  check new("sub", subFunction);
-
 
     validator_alpha:JsonRPCTypes?|error response = caller_alpha:caller(str);
     io:println(response);
@@ -39,3 +38,4 @@ public function subFunction(string msg) returns int|error{
     
     return asp.x - asp.y;
 }
+
