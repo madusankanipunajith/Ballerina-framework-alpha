@@ -122,10 +122,11 @@ public function messageValidator(string jsonString) returns JsonRPCTypes|error{
             return r;
         }
 
-        if jmessage?.id !== () && !(jmessage?.method is null) && !(jmessage?.params is null){
+        // request message can have params but not compalsory
+        if jmessage?.id !== () && !(jmessage?.method is null){
             Request r ={
                 id: <int> jmessage?.id,
-                params: jmessage?.params,
+                params: jmessage?.params is null? null : jmessage?.params,
                 method: <string> jmessage?.method,
                 jsonrpc: "2.0"
             };
