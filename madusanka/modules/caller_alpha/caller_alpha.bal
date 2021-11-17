@@ -1,5 +1,7 @@
 import madusanka.validator_alpha;
 import madusanka.store_alpha;
+import ballerina/io;
+import ballerina/lang.value;
 
 public function caller(string message) returns validator_alpha:JsonRPCTypes?|error{
 
@@ -18,32 +20,55 @@ public function caller(string message) returns validator_alpha:JsonRPCTypes?|err
 
         if result is validator_alpha:Request{
 
-            foreach var item in store_alpha:method_array {
+            if(store_alpha:methodMapper[result.method] is null){
+                
+                // method is not found
+                validator_alpha:Error err ={
+                    id: result.id,
+                    err: {code: "-32601", message: "method is not found"},
+                    jsonrpc: "2.0"
+                };
 
-                if (item.name === result.method){
+                return err;
+            
+            }else{
+
+                function (store_alpha:InputFunc) returns any|error get = store_alpha:methodMapper.get(result.method);
+                anydata params = result.params;
+                
+                store_alpha:InputFunc param;
+
+                if params is anydata[]{
+                    json convertToJson = check value:fromJsonString(params.toString());
+                    json madu ={
+                        arr: convertToJson
+                    };
+
+                    param = check madu.cloneWithType();
+                   
+                }else{
+                    param = check params.cloneWithType();     
+                }
+               
+                io:println(typeof params);
+                any res = check get(param);
+                
 
                     validator_alpha:Response response = {
                         id: result.id,
-                        result: check item.cf(message),
+                        result: res,
                         jsonrpc: "2.0"
                     };
 
                     return response;
                 }
-            }
 
-            // method is not found
-            validator_alpha:Error err ={
-                id: result.id,
-                err: {code: "-32601", message: "method is not found"},
-                jsonrpc: "2.0"
-            };
-
-            return err;
         }
-
+   
+        io:println();
         if result is validator_alpha:Error{
             return result;
-        }    
+        }  
+
     }
 }

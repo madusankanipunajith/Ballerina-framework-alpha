@@ -1,46 +1,57 @@
 import ballerina/io;
 import madusanka.method_handler;
 import madusanka.validator_alpha;
-//import madusanka.caller_alpha;
 import madusanka.runner_alpha;
-import madusanka.filter_alpha;
+import madusanka.user_alpha;
 
-type ASP record {
+// user defined record types
+type Nip record {|
     int x;
     int y;
-};
+|};
 
-string str = "{\"jsonrpc\":\"2.0\",\"method\":\"adds\",\"params\":{\"x\":89, \"y\":100},\"id\":10}";
+type Sip record {|
+    int[] arr;
+|};
+
+// json rpc messages come from client
+string str = "{\"jsonrpc\":\"2.0\",\"method\":\"add\",\"params\":{\"x\":89, \"y\":100},\"id\":10}";
 string str2 = "{\"foo\": \"boo\"}";
 string str3 = "[{\"jsonrpc\":\"2.0\",\"method\":\"add\",\"params\":{\"x\":89, \"y\":100},\"id\":10}, {\"jsonrpc\":\"2.0\",\"method\":\"subs\",\"params\":{\"x\":89, \"y\":100},\"id\":10}]";
+string str4 = "{\"jsonrpc\":\"2.0\",\"method\":\"mult\",\"params\":[10,20,30],\"id\":10}";
 
 public function main() returns error?{
 
-    method_handler:method method_1 =  check new("add", addFunction);
-    method_handler:method method_2 =  check new("sub", subFunction);
-
-   //validator_alpha:JsonRPCTypes?|runner_alpha:BatchResponse|error response = caller_alpha:caller(str2);
+    // user only need to define this after implemeting the methods
+    check method_handler:myFunction("add",addFunction);
+    check method_handler:myFunction("sub", subFunction);
+    check method_handler:myFunction("mult", multFunction);
    
+   // This executor function is running dynamically. user doesn,t need to code this. for testing I have run it in main method
    validator_alpha:Error|validator_alpha:Response|runner_alpha:BatchResponse|error? response = runner_alpha:executor(str3);
    io:println(response);
 }
 
 
-
-// user defined functions
-public function addFunction(string msg) returns int|error{
-    
-    anydata x = check filter_alpha:paramFilter(msg);
-    ASP asp = check x.cloneWithType();
-    
-    return asp.x + asp.y;
+// user defined functions .
+// user_alpha:InputFunc variable(predefined) is automatically detect the parameter values and stored at there
+// user only need to do is fetching those stored values into their own variables
+public function addFunction(user_alpha:InputFunc s) returns int|error{
+  json nips = <json> s;
+  Nip nip = check nips.cloneWithType();
+  return nip.x + nip.y;
 }
 
-public function subFunction(string msg) returns int|error{
+public function subFunction(user_alpha:InputFunc ifs) returns int|error{
+    json nips = <json> ifs;
+    Nip nip = check nips.cloneWithType();
+    return nip.x - nip.y;
+}
 
-   anydata x = check filter_alpha:paramFilter(msg);
-   ASP asp = check x.cloneWithType();
-    
-    return asp.x - asp.y;
+public function multFunction(user_alpha:InputFunc fis) returns int[]|error{
+    json nips = <json> fis;
+    Sip nip = check nips.cloneWithType();
+    io:println(nip);
+    return nip.arr;
 }
 

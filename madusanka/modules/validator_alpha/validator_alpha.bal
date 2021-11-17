@@ -5,14 +5,14 @@ type JsonRecord record {|
     int id?;
     string method?;
     string result?;
-    json|anydata[] params?;
+    anydata params?;
     string jsonrpc;
     json err?;
 |};
 
 public type Response record {|
     int id;
-    anydata result;
+    any result;
     string jsonrpc;
 |};
 
@@ -25,13 +25,13 @@ public type Error record {|
 public type Request record {
     int id;
     string method;
-    json|anydata[] params;
+    anydata params;
     string jsonrpc;
 };
 
 public type Notification record {
     string method;
-    json|anydata[] params;
+    anydata params;
     string jsonrpc;
 };
 
@@ -57,18 +57,14 @@ public function main() returns error?{
 // 3 -> invalid message
 
 public function messageValidator(string jsonString) returns JsonRPCTypes|error{
-    //io:println("This is json rpc validator...");
-
-    // io:StringReader sr = new(jsonString, encoding = "UTF-8");
-    // json message =  check sr.readJson();
-
+    
     json message = check value:fromJsonString(jsonString);
     
     JsonRecord|error jmessage = message.cloneWithType();
      
 
-    //io:println(sr);
-
+    // io:println(typeof message.params);
+    // io:println(jmessage);
     
 
     if jmessage is error{

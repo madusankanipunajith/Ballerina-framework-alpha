@@ -23,6 +23,7 @@ modules = [
 	{org = "asus", packageName = "madusanka", moduleName = "madusanka.method_handler"},
 	{org = "asus", packageName = "madusanka", moduleName = "madusanka.runner_alpha"},
 	{org = "asus", packageName = "madusanka", moduleName = "madusanka.store_alpha"},
+	{org = "asus", packageName = "madusanka", moduleName = "madusanka.user_alpha"},
 	{org = "asus", packageName = "madusanka", moduleName = "madusanka.validator_alpha"}
 ]
 

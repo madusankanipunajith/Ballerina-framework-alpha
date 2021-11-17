@@ -1,21 +1,8 @@
 import ballerina/random;
 import madusanka.store_alpha;
 
-//type nipFunc function (string x) returns anydata|error;
-
-// MethRecord is a record array
-
-// public type MethRecord record {|
-//     string name;
-//     int id;
-//     nipFunc cf;
-// |}[];
-
-// public MethRecord method_array = [];
-
-
 # Description about method class
-public class method{
+class method{
     
     private string name;
     private int id;
@@ -43,6 +30,24 @@ public class method{
     }
 
     
+}
+
+
+# Description
+#
+# + method - User Define Method Name 
+# + x - User Define Function
+# + return - Return Value Is error otherwise nothing is retured  
+public function myFunction(string method, function (store_alpha:InputFunc) returns any|error x) returns error?{
+
+    if (store_alpha:methodMapper[method] is null) {
+     
+        store_alpha:methodMapper[method] =  x.clone();     
+    
+    }else{
+         return error("same request method name cannot be applied...");
+    }
+   
 }
 
 
