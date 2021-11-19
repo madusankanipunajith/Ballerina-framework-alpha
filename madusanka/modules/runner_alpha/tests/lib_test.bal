@@ -1,34 +1,76 @@
-// import ballerina/io;
-// import ballerina/test;
+import ballerina/test;
+import madusanka.validator_alpha;
 
-// // Before Suite Function
+validator_alpha:Error res1 ={
+    id: null,
+    err:{"code": "-32700", "message": "Parse error"},
+    jsonrpc: "2.0"
+};
 
-// @test:BeforeSuite
-// function beforeSuiteFunc() {
-//     io:println("I'm the before suite function!");
-// }
+validator_alpha:Error res2 ={
+    id: null,
+    err:{"code": "-32600", "message": "something went wrong in message conversion or Invalid request"},
+    jsonrpc: "2.0"
+};
 
-// // Test function
+validator_alpha:Error res3 ={
+    id: 10,
+    err:{code: "-32601", message: "method is not found"},
+    jsonrpc: "2.0"
+};
 
-// @test:Config {}
-// function testFunction() {
-//     string name = "John";
-//     string welcomeMsg = hello(name);
-//     test:assertEquals("Hello, John", welcomeMsg);
-// }
+validator_alpha:Error res4 ={
+    id: 10,
+    err:{code: "-32602", message: "Invalid method parameters"},
+    jsonrpc: "2.0"
+};
 
-// // Negative Test function
+@test:Config{}
+function testParseError() returns error? {
+    string str2 = "{\"id\":10,\"result\":\"this is the result came from server\",\"jsonrpc\":\"2.0\"";
+    validator_alpha:Error|validator_alpha:Response|BatchResponse|error? executorResult = executor(str2);
 
-// @test:Config {}
-// function negativeTestFunction() {
-//     string name = "";
-//     string welcomeMsg = hello(name);
-//     test:assertEquals("Hello, World!", welcomeMsg);
-// }
+    if executorResult is validator_alpha:Error{
+        test:assertEquals(executorResult, res1, msg = "Testing has been failed");
+    }else{
+        test:assertFalse(true, msg = "AssertFalse failed");
+    }
+}
 
-// // After Suite Function
+@test:Config{}
+function testInvalidRequestError() {
+    string str3 = "{\"jsonrpc\":\"2.0\",\"method\":\"display\",\"params\":{\"number\":89, \"street\":\"main street\", \"town\":\"Colombo\"}, \"s\":\"10\"}";
+    validator_alpha:Error|validator_alpha:Response|BatchResponse|error? executorResult = executor(str3);
 
-// @test:AfterSuite
-// function afterSuiteFunc() {
-//     io:println("I'm the after suite function!");
-// }
+    if executorResult is validator_alpha:Error{
+        test:assertEquals(executorResult, res2, msg = "Testing has been failed");
+    }else{
+        test:assertFalse(true, msg = "AssertFalse failed");
+    }
+}
+
+// There is no main method in the module namespace. therefore there is no methods are added
+// due to that this test is failed 
+@test:Config{}
+function testInvalidMethodParameters() {
+    string str5 = "{\"jsonrpc\":\"2.0\",\"method\":\"add\",\"params\":550,\"id\":10}";
+    validator_alpha:Error|validator_alpha:Response|BatchResponse|error? executorResult = executor(str5);
+
+    if executorResult is validator_alpha:Error{
+        test:assertNotEquals(executorResult, res4, msg = "Testing has been failed");
+    }else{
+        test:assertFalse(true, msg = "AssertFalse failed");
+    }
+}
+
+@test:Config{}
+function testMethodNotFoundError() {
+    string str = "{\"jsonrpc\":\"2.0\",\"method\":\"adds\",\"params\":{\"x\":89, \"y\":100},\"id\":10}";
+    validator_alpha:Error|validator_alpha:Response|BatchResponse|error? executorResult = executor(str);
+
+    if executorResult is validator_alpha:Error{
+        test:assertEquals(executorResult, res3, msg = "Testing has been failed");
+    }else{
+        test:assertFalse(true, msg = "AssertFalse failed");
+    }
+}

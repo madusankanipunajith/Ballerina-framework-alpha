@@ -37,6 +37,18 @@ public function caller(string message) returns validator_alpha:JsonRPCTypes?|err
                 anydata params = result.params;
                 
                 store_alpha:InputFunc param;
+                io:println(typeof params);
+
+                if( !(params is anydata[]) && !(params is map<anydata>)){
+                    
+                    validator_alpha:Error err={
+                        id: result.id,
+                        err: {code: "-32602", message: "Invalid method parameters"},
+                        jsonrpc: "2.0"
+                    };
+
+                    return err;
+                }
 
                 if params is anydata[]{
                     json convertToJson = check value:fromJsonString(params.toString());
@@ -47,10 +59,10 @@ public function caller(string message) returns validator_alpha:JsonRPCTypes?|err
                     param = check madu.cloneWithType();
                    
                 }else{
+                    
                     param = check params.cloneWithType();     
                 }
-               
-                io:println(typeof params);
+
                 any res = check get(param);
                 
 

@@ -19,6 +19,7 @@ string str = "{\"jsonrpc\":\"2.0\",\"method\":\"add\",\"params\":{\"x\":89, \"y\
 string str2 = "{\"foo\": \"boo\"}";
 string str3 = "[{\"jsonrpc\":\"2.0\",\"method\":\"add\",\"params\":{\"x\":89, \"y\":100},\"id\":10}, {\"jsonrpc\":\"2.0\",\"method\":\"subs\",\"params\":{\"x\":89, \"y\":100},\"id\":10}]";
 string str4 = "{\"jsonrpc\":\"2.0\",\"method\":\"mult\",\"params\":[10,20,30],\"id\":10}";
+string str5 = "{\"jsonrpc\":\"2.0\",\"method\":\"mult\",\"params\":550,\"id\":10}";
 
 public function main() returns error?{
 
@@ -28,7 +29,7 @@ public function main() returns error?{
     check method_handler:myFunction("mult", multFunction);
    
    // This executor function is running dynamically. user doesn,t need to code this. for testing I have run it in main method
-   validator_alpha:Error|validator_alpha:Response|runner_alpha:BatchResponse|error? response = runner_alpha:executor(str3);
+   validator_alpha:Error|validator_alpha:Response|runner_alpha:BatchResponse|error? response = runner_alpha:executor(str5);
    io:println(response);
 }
 
@@ -51,7 +52,6 @@ public function subFunction(user_alpha:InputFunc ifs) returns int|error{
 public function multFunction(user_alpha:InputFunc fis) returns int[]|error{
     json nips = <json> fis;
     Sip nip = check nips.cloneWithType();
-    io:println(nip);
     return nip.arr;
 }
 
