@@ -1,5 +1,10 @@
 [package]
 distribution = "slbeta3"
 
+org = "asus"
+name = "madusanka"
+version = "0.1.0"
+export=["madusanka.json_input", "madusanka.method_handler","madusanka.filter"]
+
 [build-options]
 observabilityIncluded = true

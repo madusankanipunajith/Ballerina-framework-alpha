@@ -1,8 +1,8 @@
 import ballerina/io;
 import madusanka.method_handler;
-import madusanka.validator_alpha;
-import madusanka.runner_alpha;
-import madusanka.user_alpha;
+import madusanka.validator;
+import madusanka.runner;
+import madusanka.json_input;
 
 // user defined record types
 type Nip record {|
@@ -29,7 +29,7 @@ public function main() returns error?{
     check method_handler:myFunction("mult", multFunction);
    
    // This executor function is running dynamically. user doesn,t need to code this. for testing I have run it in main method
-   validator_alpha:Error|validator_alpha:Response|runner_alpha:BatchResponse|error? response = runner_alpha:executor(str5);
+   validator:Error|validator:Response|runner:BatchResponse|error? response = runner:executor(str3);
    io:println(response);
 }
 
@@ -37,21 +37,20 @@ public function main() returns error?{
 // user defined functions .
 // user_alpha:InputFunc variable(predefined) is automatically detect the parameter values and stored at there
 // user only need to do is fetching those stored values into their own variables
-public function addFunction(user_alpha:InputFunc s) returns int|error{
+public function addFunction(json_input:InputFunc s) returns int|error{
   json nips = <json> s;
   Nip nip = check nips.cloneWithType();
   return nip.x + nip.y;
 }
 
-public function subFunction(user_alpha:InputFunc ifs) returns int|error{
+public function subFunction(json_input:InputFunc ifs) returns int|error{
     json nips = <json> ifs;
     Nip nip = check nips.cloneWithType();
     return nip.x - nip.y;
 }
 
-public function multFunction(user_alpha:InputFunc fis) returns int[]|error{
+public function multFunction(json_input:InputFunc fis) returns int[]|error{
     json nips = <json> fis;
     Sip nip = check nips.cloneWithType();
     return nip.arr;
 }
-
